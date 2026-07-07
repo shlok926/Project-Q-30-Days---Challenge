@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Settings, Shield, Bell, HardDrive, Cpu, Mail, Key } from 'lucide-react';
+import { Settings, Shield, Bell, HardDrive, Cpu, Mail, Key, Network } from 'lucide-react';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('provider');
