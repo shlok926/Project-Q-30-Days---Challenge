@@ -2,15 +2,16 @@ import uuid
 from datetime import datetime
 from sqlalchemy import String, DateTime, ForeignKey, Boolean, JSON, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
+from sqlalchemy import JSON as JSONB, String as ARRAY
+from sqlalchemy.types import Uuid as UUID
 from database.base import Base
 from core.state_machine import ExperimentStatus
 
 class Experiment(Base):
     __tablename__ = "experiments"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    owner_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
+    owner_id: Mapped[uuid.UUID] = mapped_column(UUID, ForeignKey("users.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=True)
     status: Mapped[ExperimentStatus] = mapped_column(Enum(ExperimentStatus), default=ExperimentStatus.DRAFT)

@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
     
-    POSTGRES_SERVER: str = "postgresql+asyncpg://postgres:postgres@localhost/quantum_db"
+    POSTGRES_SERVER: str = "sqlite+aiosqlite:///./quantum_db.sqlite3"
     
     class Config:
         env_file = ".env"

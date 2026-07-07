@@ -2,14 +2,15 @@ import uuid
 from datetime import datetime
 from sqlalchemy import String, DateTime, ForeignKey, Float, Integer
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import JSON as JSONB
+from sqlalchemy.types import Uuid as UUID
 from database.base import Base
 
 class ExecutionHistory(Base):
     __tablename__ = "execution_history"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    experiment_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("experiments.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
+    experiment_id: Mapped[uuid.UUID] = mapped_column(UUID, ForeignKey("experiments.id"), nullable=False)
     
     ibm_job_id: Mapped[str] = mapped_column(String, nullable=True)
     provider: Mapped[str] = mapped_column(String)
