@@ -59,8 +59,11 @@ async def execute_experiment(
     import asyncio
     await asyncio.sleep(2) # simulate compiling & running
     
-    # Update status
+    # Update status properly through state machine
     from core.state_machine import ExperimentStatus
+    await ExperimentService.update_status(db, exp, ExperimentStatus.VALIDATED)
+    await ExperimentService.update_status(db, exp, ExperimentStatus.QUEUED)
+    await ExperimentService.update_status(db, exp, ExperimentStatus.RUNNING)
     await ExperimentService.update_status(db, exp, ExperimentStatus.COMPLETED)
     
     circuit_ascii = """
