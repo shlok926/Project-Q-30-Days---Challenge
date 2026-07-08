@@ -66,35 +66,35 @@ async def execute_experiment(
     await ExperimentService.update_status(db, exp, ExperimentStatus.RUNNING)
     await ExperimentService.update_status(db, exp, ExperimentStatus.COMPLETED)
     
-    circuit_ascii = """
-     ┌───┐     ┌─┐
-q_0: ┤ H ├──■──┤M├───
-     └───┘┌─┴─┐└╥┘┌─┐
-q_1: ─────┤ X ├─╫─┤M├
-          └───┘ ║ └╥┘
-c: 2/═══════════╩══╩═
-                0  1 
-    """
+    import qiskit
+    from qiskit import QuantumCircuit
+    import io
+    import base64
+    import matplotlib
+    matplotlib.use('Agg')
+    
     if exp.algorithm == "quantum_teleportation":
-        circuit_ascii = """
-        ┌───┐          ┌─┐      
-  q_0: ─┤ H ├──■───────┤M├──────
-        └───┘┌─┴─┐     └╥┘┌─┐   
-  q_1: ──────┤ X ├──■───╫─┤M├───
-             └───┘┌─┴─┐ ║ └╥┘┌─┐
-  q_2: ───────────┤ X ├─╫──╫─┤M├
-                  └───┘ ║  ║ └╥┘
-c_0: 1/═════════════════╩══╬══╬═
-                        0  ║  ║ 
-c_1: 1/════════════════════╩══╬═
-                           0  ║ 
-c_2: 1/═══════════════════════╩═
-                              0 
-        """
+        qc = QuantumCircuit(3, 3)
+        qc.h(0)
+        qc.cx(0, 1)
+        qc.cx(1, 2)
+        qc.measure([0, 1, 2], [0, 1, 2])
+    else:
+        qc = QuantumCircuit(2, 2)
+        qc.h(0)
+        qc.cx(0, 1)
+        qc.measure([0, 1], [0, 1])
+        
+    buf = io.BytesIO()
+    fig = qc.draw(output='mpl')
+    fig.savefig(buf, format='png', bbox_inches="tight", dpi=150)
+    buf.seek(0)
+    img_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    circuit_image = f"data:image/png;base64,{img_b64}"
         
     return {
         "job_id": f"job_{uuid.uuid4().hex[:8]}",
         "status": "COMPLETED",
         "counts": {"00": 512, "11": 512} if exp.algorithm == "bell_state" else {"000": 256, "011": 256, "100": 256, "111": 256},
-        "circuit_ascii": circuit_ascii.strip()
+        "circuit_image": circuit_image
     }

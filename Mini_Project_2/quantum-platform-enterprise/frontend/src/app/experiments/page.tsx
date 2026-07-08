@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Play, Cpu, Network, Terminal, CheckCircle2, AlertCircle, Download } from 'lucide-react';
-import html2canvas from 'html2canvas';
 
 export default function WorkspacePage() {
   const [algorithm, setAlgorithm] = useState('bell_state');
@@ -11,36 +10,6 @@ export default function WorkspacePage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [experiments, setExperiments] = useState<any[]>([]);
-
-  const colorizeCircuit = (ascii: string) => {
-    if (!ascii) return '';
-    return ascii
-      .replace(/H/g, '<span style="color: #3b82f6; font-weight: bold;">H</span>') 
-      .replace(/X/g, '<span style="color: #ef4444; font-weight: bold;">X</span>') 
-      .replace(/M/g, '<span style="color: #10b981; font-weight: bold;">M</span>') 
-      .replace(/■/g, '<span style="color: #a855f7; font-weight: bold;">■</span>') 
-      .replace(/q_[0-9]+/g, (match) => `<span style="color: #f59e0b; font-weight: bold;">${match}</span>`) 
-      .replace(/c_[0-9]+/g, (match) => `<span style="color: #6366f1; font-weight: bold;">${match}</span>`)
-      .replace(/c:/g, '<span style="color: #6366f1; font-weight: bold;">c:</span>');
-  };
-
-  const downloadCircuitPNG = async () => {
-    const element = document.getElementById('circuit-container');
-    if (!element) return;
-    try {
-      const canvas = await html2canvas(element, { 
-        backgroundColor: '#1A1A1A',
-        scale: 2 // High-res download
-      });
-      const data = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = data;
-      link.download = `quantum_circuit_${algorithm}.png`;
-      link.click();
-    } catch (e) {
-      console.error("Failed to download image", e);
-    }
-  };
 
   // Fetch past experiments
   const fetchExperiments = async () => {
@@ -188,23 +157,21 @@ export default function WorkspacePage() {
                   </pre>
                 </div>
 
-                {result.circuit_ascii && (
+                {result.circuit_image && (
                   <div className="border-t border-[#333] pt-3 mt-3">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-gray-500 mb-1">Circuit Topology:</p>
-                      <button 
-                        onClick={downloadCircuitPNG}
+                      <a 
+                        href={result.circuit_image}
+                        download={`quantum_circuit_${algorithm}.png`}
                         className="flex items-center gap-1 text-xs bg-blue-600/20 text-blue-400 hover:bg-blue-600/40 px-2 py-1 rounded transition"
                       >
                         <Download className="w-3 h-3" />
                         Download PNG
-                      </button>
+                      </a>
                     </div>
-                    <div id="circuit-container" className="bg-[#1A1A1A] p-4 rounded border border-[#333] overflow-x-auto text-[12px] leading-[14px]">
-                      <pre 
-                        className="text-gray-400"
-                        dangerouslySetInnerHTML={{ __html: colorizeCircuit(result.circuit_ascii) }}
-                      />
+                    <div className="bg-[#fff] p-2 rounded border border-[#333] flex justify-center">
+                      <img src={result.circuit_image} alt="Quantum Circuit Topology" className="max-w-full rounded" />
                     </div>
                   </div>
                 )}
