@@ -84,6 +84,12 @@ python quantum_password.py
 
 ## 🌐 Mini-Project 2: Quantum Platform Enterprise
 
+<div align="center">
+  <a href="https://quantum-enterprise.vercel.app/">
+    <img src="https://img.shields.io/badge/Live_Demo-quantum--enterprise.vercel.app-blue?style=for-the-badge&logo=vercel" alt="Live Demo" />
+  </a>
+</div>
+
 For the second milestone, I built a production-grade full-stack **Quantum Computing Management Dashboard**. This platform allows researchers to design circuits, execute them on simulated or IBM backends, and monitor real-time quantum hardware telemetry.
 
 ### 🌟 Key Features
