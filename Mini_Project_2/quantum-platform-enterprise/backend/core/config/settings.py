@@ -13,8 +13,10 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
     
     POSTGRES_SERVER: str = "sqlite+aiosqlite:///./quantum_db.sqlite3"
+    IBM_QUANTUM_TOKEN: str | None = None
     
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 settings = Settings()

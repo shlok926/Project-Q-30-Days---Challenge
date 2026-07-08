@@ -40,9 +40,10 @@ export default function WorkspacePage() {
         body: JSON.stringify({
           name: `${algorithm} Test`,
           description: `Running ${algorithm} on ${provider}`,
-          algorithm_type: algorithm,
-          provider_type: provider === 'aer_simulator' ? 'aer' : 'ibm',
-          parameters: {}
+          algorithm: algorithm,
+          provider: provider === 'aer_simulator' ? 'aer' : 'ibm',
+          backend_name: provider,
+          configuration: {}
         })
       });
       
