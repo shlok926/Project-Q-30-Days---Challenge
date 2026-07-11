@@ -16,10 +16,12 @@ This repository contains my daily workbooks, learning notes, and practical imple
 
 The repository is organized day-by-day. Each folder contains the daily workbook/materials provided in the challenge, along with a `Solutions_and_Notes` folder for personal notes and solved exercises.
 
-* **Day_01 to Day_10**: Core quantum concepts (Qubits, Superposition, Entanglement, Measurement) and Qiskit basics.
-* **Mini_Project_1**: The Quantum Randomness Laboratory.
-* **Day_11 to Day_16**: Advanced algorithms, Quantum Error Correction, Optimization (QAOA), and further concepts.
-* **Mini_Project_2**: Quantum Platform Enterprise Dashboard.
+* **Week 1 (Day 1 - Day 7)**: Core quantum concepts (Qubits, Superposition, Entanglement, Measurement) and Qiskit basics.
+* **Week 2 (Day 8 - Day 14)**: Building foundational algorithms and deepening quantum intuition.
+  * 🏆 *Milestone:* **Mini_Project_1**: The Quantum Randomness Laboratory.
+* **Week 3 (Day 15 - Day 21)**: Advanced algorithms, Quantum Error Correction, and Quantum Optimization (QAOA).
+  * 🏆 *Milestone:* **Mini_Project_2**: Quantum Platform Enterprise Dashboard.
+* **Week 4 (Day 22 - Day 30)**: Real-world applications, advanced machine learning, and final capstones.
 
 ## 🛡️ Mini-Project: Quantum-Randomness-Lab
 
