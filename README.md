@@ -18,10 +18,9 @@ The repository is organized day-by-day. Each folder contains the daily workbook/
 
 * **Week 1 (Day 1 - Day 7)**: Core quantum concepts (Qubits, Superposition, Entanglement, Measurement) and Qiskit basics.
 * **Week 2 (Day 8 - Day 14)**: Building foundational algorithms and deepening quantum intuition.
-  * 🏆 *Milestone:* **Mini_Project_1**: The Quantum Randomness Laboratory.
-* **Week 3 (Day 15 - Day 21)**: Advanced algorithms, Quantum Error Correction, and Quantum Optimization (QAOA).
-  * 🏆 *Milestone:* **Mini_Project_2**: Quantum Platform Enterprise Dashboard.
-* **Week 4 (Day 22 - Day 30)**: Real-world applications, advanced machine learning, and final capstones.
+  * 🏆 *Milestone 1:* **Mini_Project_1**: The Quantum Randomness Laboratory.
+  * 🏆 *Milestone 2:* **Mini_Project_2**: Quantum Platform Enterprise Dashboard.
+*(Week 3 and Week 4 will be updated as the challenge progresses!)*
 
 ## 🛡️ Mini-Project: Quantum-Randomness-Lab
 
