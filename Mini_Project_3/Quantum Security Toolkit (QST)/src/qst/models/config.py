@@ -8,11 +8,35 @@ References:
 from dataclasses import dataclass
 from typing import Optional
 
+from qst.exceptions.validation import ValidationError
 from qst.utils.validation import (
     validate_probability,
     validate_qubit_count,
     validate_seed,
 )
+
+
+@dataclass(frozen=True)
+class SecurityThresholds:
+    """Configurable security threshold limits for QKD runs.
+
+    Attributes:
+        secure_qber: Maximum QBER limit to classify channel as secure.
+        warning_qber: QBER limit above which the channel is compromised.
+    """
+
+    secure_qber: float = 0.0
+    warning_qber: float = 0.11
+
+    def __post_init__(self) -> None:
+        """Validate thresholds ranges."""
+        validate_probability(self.secure_qber, name="secure_qber")
+        validate_probability(self.warning_qber, name="warning_qber")
+        if self.secure_qber > self.warning_qber:
+            raise ValidationError(
+                f"secure_qber ({self.secure_qber}) cannot be greater than warning_qber ({self.warning_qber}).",
+                code="QST-VAL-302",
+            )
 
 
 @dataclass(frozen=True)

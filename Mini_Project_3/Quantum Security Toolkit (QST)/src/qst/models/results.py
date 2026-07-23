@@ -6,11 +6,123 @@ References:
     Docs/QBER_SPEC.md §6
 """
 
+from enum import Enum
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from qst.exceptions.validation import ValidationError
 from qst.models.metadata import SimulationMetadata
+
+
+class SecurityStatus(Enum):
+    """Enumeration representing the secure state classification of a QKD run."""
+
+    SECURE = "SECURE"
+    WARNING = "WARNING"
+    COMPROMISED = "COMPROMISED"
+
+
+@dataclass(frozen=True)
+class EveSimulationResult:
+    """Immutable domain model representing the eavesdropping intercept-resend simulation.
+
+    Attributes:
+        intercepted_mask: Tuple of booleans flagging intercepted qubit indices.
+        eve_bases: Tuple of basis choices selected by Eve (empty string if not intercepted).
+        eve_measurements: Tuple of measurement outcomes obtained by Eve (None if not intercepted).
+        reconstructed_bits: Tuple of bits prepared by Eve for transmission to Bob.
+        reconstructed_bases: Tuple of bases chosen by Eve for transmission to Bob.
+    """
+
+    intercepted_mask: tuple[bool, ...]
+    eve_bases: tuple[str, ...]
+    eve_measurements: tuple[Optional[int], ...]
+    reconstructed_bits: tuple[int, ...]
+    reconstructed_bases: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        """Validate input mask and parameter lengths."""
+        length = len(self.intercepted_mask)
+        if (
+            len(self.eve_bases) != length
+            or len(self.eve_measurements) != length
+            or len(self.reconstructed_bits) != length
+            or len(self.reconstructed_bases) != length
+        ):
+            raise ValidationError(
+                "All tuple attributes in EveSimulationResult must have identical length.",
+                code="QST-VAL-514",
+            )
+
+
+@dataclass(frozen=True)
+class QBERResult:
+    """Immutable domain model representing the calculated QBER telemetry.
+
+    Attributes:
+        error_count: Number of differing bits between Alice and Bob's keys.
+        sifted_key_length: Size of keys compared.
+        qber: Estimated Quantum Bit Error Rate fraction.
+        confidence_notes: Diagnostic notes detailing metrics context.
+    """
+
+    error_count: int
+    sifted_key_length: int
+    qber: float
+    confidence_notes: str
+
+    def __post_init__(self) -> None:
+        """Validate QBER and error count bounds."""
+        if not (0.0 <= self.qber <= 1.0):
+            raise ValidationError(
+                f"QBER must be between 0.0 and 1.0, got {self.qber}",
+                code="QST-VAL-501",
+            )
+        if self.error_count < 0:
+            raise ValidationError(
+                f"Error count must be non-negative, got {self.error_count}",
+                code="QST-VAL-515",
+            )
+        if self.sifted_key_length < 0:
+            raise ValidationError(
+                f"Sifted key length must be non-negative, got {self.sifted_key_length}",
+                code="QST-VAL-503",
+            )
+
+
+@dataclass(frozen=True)
+class SecurityMetrics:
+    """Immutable domain model representing security statistics and decisions.
+
+    Attributes:
+        key_rate: Ratio of final key length to total raw qubits simulated.
+        discard_rate: Ratio of discarded bits to total raw qubits simulated.
+        error_rate: QBER rate or channel error fraction.
+        status: Secure classification flag (SECURE, WARNING, COMPROMISED).
+    """
+
+    key_rate: float
+    discard_rate: float
+    error_rate: float
+    status: SecurityStatus
+
+    def __post_init__(self) -> None:
+        """Validate rates and status bounds."""
+        if not (0.0 <= self.key_rate <= 1.0):
+            raise ValidationError(
+                f"Key rate must be between 0.0 and 1.0, got {self.key_rate}",
+                code="QST-VAL-502",
+            )
+        if not (0.0 <= self.discard_rate <= 1.0):
+            raise ValidationError(
+                f"Discard rate must be between 0.0 and 1.0, got {self.discard_rate}",
+                code="QST-VAL-516",
+            )
+        if not (0.0 <= self.error_rate <= 1.0):
+            raise ValidationError(
+                f"Error rate must be between 0.0 and 1.0, got {self.error_rate}",
+                code="QST-VAL-517",
+            )
 
 
 @dataclass(frozen=True)
@@ -139,6 +251,13 @@ class SimulationResult:
     bob_bases: Optional[tuple[str, ...]] = None
     reconciliation: Optional[ReconciliationResult] = None
     sifted_keys: Optional[SiftedKeyResult] = None
+    interception_probability: float = 0.0
+    eve_simulation: Optional[EveSimulationResult] = None
+    qber_result: Optional[QBERResult] = None
+    security_metrics: Optional[SecurityMetrics] = None
+    privacy_amplification: Optional[Any] = None
+    error_correction: Optional[Any] = None
+    entropy_analysis: Optional[Any] = None
 
     def __post_init__(self) -> None:
         """Validate output properties post initialization."""
@@ -156,6 +275,11 @@ class SimulationResult:
             raise ValidationError(
                 f"Final key length must be non-negative, got {self.final_key_length}",
                 code="QST-VAL-503",
+            )
+        if not (0.0 <= self.interception_probability <= 1.0):
+            raise ValidationError(
+                f"Interception probability must be between 0.0 and 1.0, got {self.interception_probability}",
+                code="QST-VAL-202",
             )
 
 

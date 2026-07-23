@@ -46,6 +46,18 @@ class RandomProvider(abc.ABC):
         """
         pass
 
+    @abc.abstractmethod
+    def generate_probabilities(self, length: int) -> tuple[float, ...]:
+        """Generate a sequence of random float probabilities in range [0.0, 1.0).
+
+        Args:
+            length: Number of probabilities to generate.
+
+        Returns:
+            An immutable tuple of floats.
+        """
+        pass
+
 
 class NumpyRandomProvider(RandomProvider):
     """Concrete implementation of RandomProvider using NumPy.
@@ -91,3 +103,17 @@ class NumpyRandomProvider(RandomProvider):
             return ()
         bases = self._rng.choice(allowed_bases, size=length)
         return tuple(str(b) for b in bases)
+
+    def generate_probabilities(self, length: int) -> tuple[float, ...]:
+        """Generate a sequence of random float probabilities in range [0.0, 1.0).
+
+        Args:
+            length: Number of probabilities to generate.
+
+        Returns:
+            An immutable tuple of floats.
+        """
+        if length <= 0:
+            return ()
+        probs = self._rng.random(size=length)
+        return tuple(float(p) for p in probs)

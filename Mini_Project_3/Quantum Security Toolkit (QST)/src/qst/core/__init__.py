@@ -5,6 +5,6 @@ References:
 """
 
 from qst.core.bb84.protocol import BB84Protocol
-from qst.core.eavesdropper import Eavesdropper
+from qst.core.eavesdropper import Eavesdropper, InterceptResendChannel
 
-__all__ = ["BB84Protocol", "Eavesdropper"]
+__all__ = ["BB84Protocol", "Eavesdropper", "InterceptResendChannel"]

@@ -43,6 +43,8 @@ def test_numpy_random_provider_types_and_bounds() -> None:
     assert prov.generate_bits(-10) == ()
     assert prov.generate_bases(0, ("Z", "X")) == ()
     assert prov.generate_bases(-5, ("Z", "X")) == ()
+    assert prov.generate_probabilities(0) == ()
+    assert prov.generate_probabilities(-5) == ()
 
     # Bit values logic
     bits = prov.generate_bits(100)
@@ -69,6 +71,10 @@ def test_abstract_random_provider() -> None:
         ) -> tuple[str, ...]:
             return super().generate_bases(length, allowed_bases)  # type: ignore[return-value]
 
+        def generate_probabilities(self, length: int) -> tuple[float, ...]:
+            return super().generate_probabilities(length)  # type: ignore[return-value]
+
     prov = MockRandomProvider()
     assert prov.generate_bits(5) is None
     assert prov.generate_bases(5, ("Z", "X")) is None
+    assert prov.generate_probabilities(5) is None

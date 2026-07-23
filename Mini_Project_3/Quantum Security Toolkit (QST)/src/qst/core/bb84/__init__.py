@@ -24,6 +24,9 @@ from qst.core.bb84.reconciliation import (
     ReconciliationStatistics,
 )
 from qst.core.bb84.sifting import KeySiftingService
+from qst.core.bb84.eavesdropper import InterceptResendChannel
+from qst.core.bb84.qber import QBERService
+from qst.core.bb84.metrics import SecurityMetricsService
 
 __all__ = [
     "BASIS_X",
@@ -44,4 +47,7 @@ __all__ = [
     "BasisReconciliationService",
     "ReconciliationStatistics",
     "KeySiftingService",
+    "InterceptResendChannel",
+    "QBERService",
+    "SecurityMetricsService",
 ]
