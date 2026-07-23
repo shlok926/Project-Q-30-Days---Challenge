@@ -23,6 +23,9 @@ from qst.core.bb84.circuit_builder import (
 )
 from qst.core.bb84.measurement import MeasurementBasisGenerator, MeasurementBuilder
 from qst.core.bb84.validators import validate_bb84_inputs
+from qst.models.results import SimulationResult, ReconciliationResult, SiftedKeyResult
+from qst.core.bb84.reconciliation import BasisReconciliationService
+from qst.core.bb84.sifting import KeySiftingService
 
 
 class BB84Protocol(ProtocolInterface):
@@ -52,6 +55,8 @@ class BB84Protocol(ProtocolInterface):
         )
         self._meas_generator = MeasurementBasisGenerator(self._random_provider)
         self._meas_builder = MeasurementBuilder(self._gate_applier)
+        self._reconciliation_service = BasisReconciliationService()
+        self._sifting_service = KeySiftingService()
 
         # Local state storage
         self._n_qubits: int = 0
@@ -64,6 +69,8 @@ class BB84Protocol(ProtocolInterface):
         self._prepared_circuit: Any = None
         self._measured_circuit: Any = None
         self._raw_counts: dict[str, int] = {}
+        self._reconciliation: Optional[ReconciliationResult] = None
+        self._sifted_keys: Optional[SiftedKeyResult] = None
 
     def initialize(self, n_qubits: int, seed: Optional[int] = None) -> None:
         """Initialize simulation parameters and prepare Alice and Bob states.
@@ -119,6 +126,14 @@ class BB84Protocol(ProtocolInterface):
             outcome_str = list(counts.keys())[0]
             self._bob_bits = tuple(int(bit) for bit in reversed(outcome_str))
 
+        # Perform basis reconciliation and sifting
+        self._reconciliation = self._reconciliation_service.reconcile(
+            self._alice_bases, self._bob_bases
+        )
+        self._sifted_keys = self._sifting_service.sift_keys(
+            self._alice_bits, self._bob_bits, self._reconciliation
+        )
+
     def validate(self) -> None:
         """Verify internal consistency of states and parameters.
 
@@ -144,22 +159,36 @@ class BB84Protocol(ProtocolInterface):
         self._prepared_circuit = None
         self._measured_circuit = None
         self._raw_counts = {}
+        self._reconciliation = None
+        self._sifted_keys = None
 
-    def export(self) -> dict[str, Any]:
-        """Export the compiled states and outcomes (no sifting/post-processing).
+    def export(self) -> SimulationResult:
+        """Export the final SimulationResult representation of the run.
 
         Returns:
-            A dictionary containing generated states and raw counts.
+            The immutable SimulationResult payload.
         """
-        return {
-            "n_qubits": self._n_qubits,
-            "seed": self._seed,
-            "alice_bits": self._alice_bits,
-            "alice_bases": self._alice_bases,
-            "bob_bases": self._bob_bases,
-            "bob_bits": self._bob_bits,
-            "raw_counts": self._raw_counts,
-        }
+        final_key_len = self._sifted_keys.key_length if self._sifted_keys else 0
+        key_rate = float(final_key_len / self._n_qubits) if self._n_qubits > 0 else 0.0
+        sifted_key_list = list(self._sifted_keys.alice_key) if self._sifted_keys else []
+
+        return SimulationResult(
+            qber=None,
+            final_key_length=final_key_len,
+            key_rate=key_rate,
+            sifted_key=sifted_key_list,
+            n_qubits=self._n_qubits,
+            seed=self._seed,
+            eve_intercept_probability=0.0,
+            warnings=[],
+            metadata={"raw_counts": self._raw_counts},
+            alice_bits=self._alice_bits,
+            bob_bits=self._bob_bits,
+            alice_bases=self._alice_bases,
+            bob_bases=self._bob_bases,
+            reconciliation=self._reconciliation,
+            sifted_keys=self._sifted_keys,
+        )
 
     # Public getters for test assertions
     @property
@@ -191,3 +220,13 @@ class BB84Protocol(ProtocolInterface):
     def measured_circuit(self) -> Any:
         """Return the compiled measurement circuit."""
         return self._measured_circuit
+
+    @property
+    def reconciliation(self) -> Optional[ReconciliationResult]:
+        """Return the basis reconciliation result."""
+        return self._reconciliation
+
+    @property
+    def sifted_keys(self) -> Optional[SiftedKeyResult]:
+        """Return the key sifting result."""
+        return self._sifted_keys

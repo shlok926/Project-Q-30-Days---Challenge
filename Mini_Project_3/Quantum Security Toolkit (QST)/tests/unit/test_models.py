@@ -65,6 +65,17 @@ def test_simulation_result_invalid() -> None:
     with pytest.raises(ValidationError):
         SimulationResult(
             qber=0.2,
+            final_key_length=-5,
+            key_rate=0.5,
+            sifted_key=[0, 1],
+            n_qubits=100,
+            seed=42,
+            eve_intercept_probability=0.5,
+        )
+
+    with pytest.raises(ValidationError):
+        SimulationResult(
+            qber=0.2,
             final_key_length=50,
             key_rate=-0.1,
             sifted_key=[0, 1],

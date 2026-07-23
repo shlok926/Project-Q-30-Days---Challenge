@@ -37,10 +37,10 @@ def test_bb84_protocol_orchestrated_flow() -> None:
 
     # 4. Export
     exp = protocol.export()
-    assert exp["n_qubits"] == 10
-    assert exp["seed"] == 42
-    assert exp["alice_bits"] == protocol.alice_bits
-    assert exp["bob_bits"] == protocol.bob_bits
+    assert exp.n_qubits == 10
+    assert exp.seed == 42
+    assert exp.alice_bits == protocol.alice_bits
+    assert exp.bob_bits == protocol.bob_bits
 
     # Verify that Bob's bits match Alice's bits wherever bases match!
     # (Since there is no eavesdropper, mismatched bases produce 50% error,

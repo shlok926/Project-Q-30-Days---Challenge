@@ -9,6 +9,8 @@ from qst.models.metadata import SimulationMetadata
 from qst.models.results import (
     BatchResult,
     ExportMetadata,
+    ReconciliationResult,
+    SiftedKeyResult,
     SimulationResult,
     ValidationResult,
 )
@@ -22,4 +24,6 @@ __all__ = [
     "ExportMetadata",
     "ValidationResult",
     "VisualizationResult",
+    "ReconciliationResult",
+    "SiftedKeyResult",
 ]

@@ -14,6 +14,95 @@ from qst.models.metadata import SimulationMetadata
 
 
 @dataclass(frozen=True)
+class ReconciliationResult:
+    """Immutable domain model representing the result of basis reconciliation.
+
+    Attributes:
+        matching_indices: Sorted sequence of indices where bases matched.
+        discarded_indices: Sequence of indices where bases mismatched.
+        matching_bases: Sequence of basis strings that matched.
+        total_bits: Total bits processed.
+        matching_count: Total count of matching indices.
+        match_rate: Ratio of matching bits to total bits.
+    """
+
+    matching_indices: tuple[int, ...]
+    discarded_indices: tuple[int, ...]
+    matching_bases: tuple[str, ...]
+    total_bits: int
+    matching_count: int
+    match_rate: float
+
+    def __post_init__(self) -> None:
+        """Validate reconciliation properties post initialization."""
+        if list(self.matching_indices) != sorted(self.matching_indices):
+            raise ValidationError(
+                "Matching indices must be sorted.",
+                code="QST-VAL-505",
+            )
+        if len(set(self.matching_indices)) != len(self.matching_indices):
+            raise ValidationError(
+                "Matching indices must be unique.",
+                code="QST-VAL-506",
+            )
+        if self.total_bits < 0:
+            raise ValidationError(
+                f"Total bits must be non-negative, got {self.total_bits}",
+                code="QST-VAL-513",
+            )
+        for idx in self.matching_indices:
+            if not (0 <= idx < self.total_bits):
+                raise ValidationError(
+                    f"Matching index {idx} out of bounds for total_bits {self.total_bits}.",
+                    code="QST-VAL-507",
+                )
+        for idx in self.discarded_indices:
+            if not (0 <= idx < self.total_bits):
+                raise ValidationError(
+                    f"Discarded index {idx} out of bounds for total_bits {self.total_bits}.",
+                    code="QST-VAL-508",
+                )
+        if self.matching_count != len(self.matching_indices):
+            raise ValidationError(
+                f"Matching count ({self.matching_count}) must equal matching indices size ({len(self.matching_indices)}).",
+                code="QST-VAL-509",
+            )
+        if not (0.0 <= self.match_rate <= 1.0):
+            raise ValidationError(
+                f"Match rate must be between 0.0 and 1.0, got {self.match_rate}",
+                code="QST-VAL-510",
+            )
+
+
+@dataclass(frozen=True)
+class SiftedKeyResult:
+    """Immutable domain model representing the keys generated after sifting.
+
+    Attributes:
+        alice_key: Sequence of bits representing Alice's sifted key.
+        bob_key: Sequence of bits representing Bob's sifted key.
+        key_length: Size of the secret sifted keys.
+    """
+
+    alice_key: tuple[int, ...]
+    bob_key: tuple[int, ...]
+    key_length: int
+
+    def __post_init__(self) -> None:
+        """Validate key sifting properties post initialization."""
+        if len(self.alice_key) != len(self.bob_key):
+            raise ValidationError(
+                f"Alice and Bob sifted keys must have equal lengths, got {len(self.alice_key)} and {len(self.bob_key)}.",
+                code="QST-VAL-511",
+            )
+        if self.key_length != len(self.alice_key):
+            raise ValidationError(
+                f"Key length ({self.key_length}) must match alice_key size ({len(self.alice_key)}).",
+                code="QST-VAL-512",
+            )
+
+
+@dataclass(frozen=True)
 class SimulationResult:
     """The canonical output payload representing a single key-exchange simulation.
 
@@ -27,6 +116,12 @@ class SimulationResult:
         eve_intercept_probability: Configured probability of interception.
         warnings: List of warnings raised during execution.
         metadata: Serialization-ready diagnostic metadata.
+        alice_bits: Alice's generated bits.
+        bob_bits: Bob's measured bits.
+        alice_bases: Alice's encoding bases.
+        bob_bases: Bob's measurement bases.
+        reconciliation: Basis reconciliation results.
+        sifted_keys: Sifted keys results.
     """
 
     qber: Optional[float]
@@ -38,6 +133,12 @@ class SimulationResult:
     eve_intercept_probability: float
     warnings: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
+    alice_bits: Optional[tuple[int, ...]] = None
+    bob_bits: Optional[tuple[int, ...]] = None
+    alice_bases: Optional[tuple[str, ...]] = None
+    bob_bases: Optional[tuple[str, ...]] = None
+    reconciliation: Optional[ReconciliationResult] = None
+    sifted_keys: Optional[SiftedKeyResult] = None
 
     def __post_init__(self) -> None:
         """Validate output properties post initialization."""

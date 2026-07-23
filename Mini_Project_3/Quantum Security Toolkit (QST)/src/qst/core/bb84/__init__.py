@@ -19,6 +19,11 @@ from qst.core.bb84.circuit_builder import (
 )
 from qst.core.bb84.measurement import MeasurementBasisGenerator, MeasurementBuilder
 from qst.core.bb84.protocol import BB84Protocol
+from qst.core.bb84.reconciliation import (
+    BasisReconciliationService,
+    ReconciliationStatistics,
+)
+from qst.core.bb84.sifting import KeySiftingService
 
 __all__ = [
     "BASIS_X",
@@ -36,4 +41,7 @@ __all__ = [
     "MeasurementBasisGenerator",
     "MeasurementBuilder",
     "BB84Protocol",
+    "BasisReconciliationService",
+    "ReconciliationStatistics",
+    "KeySiftingService",
 ]
