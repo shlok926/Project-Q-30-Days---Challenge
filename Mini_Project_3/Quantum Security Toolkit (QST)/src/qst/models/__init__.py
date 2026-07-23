@@ -24,7 +24,13 @@ from qst.models.results import (
     ParameterSweepResult,
     StatisticsResult,
 )
-from qst.models.visualization import VisualizationResult
+from qst.models.visualization import (
+    VisualizationResult,
+    LineSeries,
+    ScatterSeries,
+    HistogramSeries,
+    HeatmapMatrix,
+)
 
 __all__ = [
     "SimulationConfig",
@@ -36,6 +42,10 @@ __all__ = [
     "ExportMetadata",
     "ValidationResult",
     "VisualizationResult",
+    "LineSeries",
+    "ScatterSeries",
+    "HistogramSeries",
+    "HeatmapMatrix",
     "ReconciliationResult",
     "SiftedKeyResult",
     "SecurityStatus",

@@ -29,6 +29,15 @@ from qst.reporting.serializers.serializers import (
 )
 from qst.reporting.exporters.json_exporter import JSONExporter
 from qst.reporting.exporters.csv_exporter import CSVExporter
+from qst.analysis.aggregators.aggregator import (
+    ExperimentAggregator,
+    AggregationResult,
+)
+from qst.analysis.trends.trends import TrendAnalysisService
+from qst.analysis.comparisons.comparison import (
+    ComparisonService,
+    ComparisonResult,
+)
 
 __version__ = QST_VERSION
 
@@ -54,4 +63,13 @@ __all__ = [
     "ParameterSweepSerializer",
     "JSONExporter",
     "CSVExporter",
+    "ExperimentAggregator",
+    "AggregationResult",
+    "TrendAnalysisService",
+    "ComparisonService",
+    "ComparisonResult",
+    "LineSeries",
+    "ScatterSeries",
+    "HistogramSeries",
+    "HeatmapMatrix",
 ]
