@@ -1,20 +1,103 @@
-"""Visualizer implementation class stub.
+"""Visualizer dispatcher class.
 
 References:
     Docs/VISUALIZATION_SPEC.md §1-§5
-    Docs/07_SYSTEM_ARCHITECTURE.md §5
+    Docs/07_SYSTEM_ARCHITECTURE.md §5, §11
 """
 
-from typing import Any, List
+from typing import Any, Optional
 
 from qst.models.results import SimulationResult
+from qst.visualization.backend import VisualizationBackend, VisualizationResult
+from qst.visualization.datasets import (
+    LineSeries,
+    ScatterSeries,
+    HistogramSeries,
+    HeatmapMatrix,
+)
+from qst.visualization.styles import Theme, LightTheme
 
 
 class Visualizer:
-    """Handles rendering of tables and charts for simulation results.
+    """Dispatches dataset render requests onto a configured plotting backend."""
 
-    Responsible for basis reconciliation tables and sweep graphs.
-    """
+    def __init__(
+        self,
+        backend: VisualizationBackend,
+        theme: Optional[Theme] = None,
+    ) -> None:
+        """Initialize Visualizer.
+
+        Args:
+            backend: A concrete subclass of VisualizationBackend.
+            theme: Styling variables to apply. Defaults to LightTheme.
+        """
+        self.backend = backend
+        self.theme = theme or LightTheme()
+
+    def line_chart(
+        self,
+        series: LineSeries,
+        filepath: Optional[str] = None,
+    ) -> VisualizationResult:
+        """Plot a line chart series.
+
+        Args:
+            series: The LineSeries dataset.
+            filepath: Destination file save path.
+
+        Returns:
+            A VisualizationResult payload wrapper.
+        """
+        return self.backend.line_chart(series, self.theme, filepath)
+
+    def scatter_chart(
+        self,
+        series: ScatterSeries,
+        filepath: Optional[str] = None,
+    ) -> VisualizationResult:
+        """Plot a scatter chart series.
+
+        Args:
+            series: The ScatterSeries dataset.
+            filepath: Destination file save path.
+
+        Returns:
+            A VisualizationResult payload wrapper.
+        """
+        return self.backend.scatter_chart(series, self.theme, filepath)
+
+    def histogram(
+        self,
+        series: HistogramSeries,
+        filepath: Optional[str] = None,
+    ) -> VisualizationResult:
+        """Plot a histogram.
+
+        Args:
+            series: The HistogramSeries dataset.
+            filepath: Destination file save path.
+
+        Returns:
+            A VisualizationResult payload wrapper.
+        """
+        return self.backend.histogram(series, self.theme, filepath)
+
+    def heatmap(
+        self,
+        matrix: HeatmapMatrix,
+        filepath: Optional[str] = None,
+    ) -> VisualizationResult:
+        """Plot a heatmap matrix.
+
+        Args:
+            matrix: The HeatmapMatrix dataset.
+            filepath: Destination file save path.
+
+        Returns:
+            A VisualizationResult payload wrapper.
+        """
+        return self.backend.heatmap(matrix, self.theme, filepath)
 
     @staticmethod
     def render_basis_table(result: SimulationResult) -> str:
@@ -26,22 +109,18 @@ class Visualizer:
         Returns:
             A formatted string containing the basis reconciliation table.
         """
-        # TODO: Construct formatted text table mapping bases and bits. Ref: VISUALIZATION_SPEC.md §3
-        raise NotImplementedError(
-            "Visualizer.render_basis_table is not yet implemented."
-        )
+        if result.alice_bases is None or result.bob_bases is None:
+            return "No bases to compare."
 
-    @staticmethod
-    def plot_qber_vs_interception(results: list[SimulationResult]) -> Any:
-        """Generate a matplotlib line plot mapping QBER to Eve's intercept probability.
+        lines = [
+            "Basis Reconciliation Table:",
+            f"Alice Bases: {' '.join(result.alice_bases)}",
+            f"Bob Bases:   {' '.join(result.bob_bases)}",
+        ]
 
-        Args:
-            results: A list of individual SimulationResults from a batch sweep.
+        match_str = []
+        for a, b in zip(result.alice_bases, result.bob_bases):
+            match_str.append("✔" if a == b else "✘")
 
-        Returns:
-            A matplotlib.figure.Figure object representing the chart.
-        """
-        # TODO: Plot line graph using matplotlib. Ref: VISUALIZATION_SPEC.md §3
-        raise NotImplementedError(
-            "Visualizer.plot_qber_vs_interception is not yet implemented."
-        )
+        lines.append(f"Matches:     {' '.join(match_str)}")
+        return "\n".join(lines)

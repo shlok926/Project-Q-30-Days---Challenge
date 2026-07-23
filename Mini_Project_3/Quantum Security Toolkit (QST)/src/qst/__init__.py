@@ -38,6 +38,16 @@ from qst.analysis.comparisons.comparison import (
     ComparisonService,
     ComparisonResult,
 )
+from qst.visualization.datasets import (
+    LineSeries,
+    ScatterSeries,
+    HistogramSeries,
+    HeatmapMatrix,
+)
+from qst.visualization.backend import VisualizationBackend, VisualizationResult
+from qst.visualization.matplotlib_backend import MatplotlibBackend
+from qst.visualization.registry import VisualizationBackendRegistry
+from qst.visualization.styles import Theme, LightTheme, DarkTheme, ScientificTheme
 
 __version__ = QST_VERSION
 
@@ -72,4 +82,12 @@ __all__ = [
     "ScatterSeries",
     "HistogramSeries",
     "HeatmapMatrix",
+    "VisualizationBackend",
+    "VisualizationResult",
+    "MatplotlibBackend",
+    "VisualizationBackendRegistry",
+    "Theme",
+    "LightTheme",
+    "DarkTheme",
+    "ScientificTheme",
 ]

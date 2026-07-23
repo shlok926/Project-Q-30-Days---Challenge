@@ -7,6 +7,7 @@ References:
 
 import pytest
 
+from qst.exceptions.validation import ValidationError
 from qst.models.results import (
     SimulationResult,
     ExperimentResult,
@@ -126,8 +127,11 @@ def test_trend_analysis_empty_simulations() -> None:
     sweep = ParameterSweepResult((exp,), 1, SweepDimensions((), (), ()), metadata)
 
     service = TrendAnalysisService()
-    series_qber = service.analyze_qber_vs_interception(sweep)
-    series_key = service.analyze_key_rate_vs_qubits(sweep)
+    # Empty simulations should raise ValidationError because empty LineSeries datasets are invalid
+    with pytest.raises(ValidationError) as exc:
+        service.analyze_qber_vs_interception(sweep)
+    assert "QST-VAL-705" in str(exc.value)
 
-    assert len(series_qber.x_values) == 0
-    assert len(series_key.x_values) == 0
+    with pytest.raises(ValidationError) as exc:
+        service.analyze_key_rate_vs_qubits(sweep)
+    assert "QST-VAL-705" in str(exc.value)
