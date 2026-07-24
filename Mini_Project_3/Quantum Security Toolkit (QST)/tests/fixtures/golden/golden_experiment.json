@@ -1,0 +1,203 @@
+{
+    "average_key_rate": 0.3,
+    "average_qber": 0.0,
+    "compromised_runs": 0,
+    "metadata": {
+        "protocol": "BB84",
+        "qiskit_version": "2.0.0",
+        "repetitions": 1,
+        "seed_strategy": "seeded-sub-generators",
+        "timestamp": "2026-07-24T17:15:00"
+    },
+    "metrics": {
+        "average_simulation_time": 0.05,
+        "execution_time": 0.1,
+        "simulations_per_second": 10.0,
+        "throughput": 100.0
+    },
+    "secure_runs": 1,
+    "simulations": [
+        {
+            "alice_bases": [
+                "X",
+                "Z",
+                "Z",
+                "X",
+                "X",
+                "Z",
+                "X",
+                "Z",
+                "X",
+                "X"
+            ],
+            "alice_bits": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0,
+                0,
+                1
+            ],
+            "bob_bases": [
+                "Z",
+                "Z",
+                "X",
+                "Z",
+                "Z",
+                "X",
+                "X",
+                "X",
+                "Z",
+                "X"
+            ],
+            "bob_bits": [
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "eve_intercept_probability": 0.5,
+            "eve_simulation": {
+                "eve_bases": [
+                    "Z",
+                    "",
+                    "",
+                    "Z",
+                    "X",
+                    "X",
+                    "X",
+                    "",
+                    "Z",
+                    "X"
+                ],
+                "eve_measurements": [
+                    0,
+                    null,
+                    null,
+                    0,
+                    1,
+                    0,
+                    0,
+                    null,
+                    0,
+                    1
+                ],
+                "intercepted_mask": [
+                    true,
+                    false,
+                    false,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    true,
+                    true
+                ],
+                "reconstructed_bases": [
+                    "Z",
+                    "Z",
+                    "Z",
+                    "Z",
+                    "X",
+                    "X",
+                    "X",
+                    "Z",
+                    "Z",
+                    "X"
+                ],
+                "reconstructed_bits": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "final_key_length": 3,
+            "interception_probability": 0.5,
+            "key_rate": 0.3,
+            "metadata": {
+                "qiskit_version": "2.0.0",
+                "raw_counts": {
+                    "1000010000": 1
+                },
+                "timestamp": "2026-07-24T17:15:00"
+            },
+            "n_qubits": 10,
+            "qber": 0.0,
+            "qber_result": {
+                "confidence_notes": "Warning: Sifted key length is short. QBER estimate has high statistical variance.",
+                "error_count": 0,
+                "qber": 0.0,
+                "sifted_key_length": 3
+            },
+            "reconciliation": {
+                "discarded_indices": [
+                    0,
+                    2,
+                    3,
+                    4,
+                    5,
+                    7,
+                    8
+                ],
+                "match_rate": 0.3,
+                "matching_bases": [
+                    "Z",
+                    "X",
+                    "X"
+                ],
+                "matching_count": 3,
+                "matching_indices": [
+                    1,
+                    6,
+                    9
+                ],
+                "total_bits": 10
+            },
+            "security_metrics": {
+                "discard_rate": 0.7,
+                "error_rate": 0.0,
+                "key_rate": 0.3,
+                "status": "SECURE"
+            },
+            "seed": 89250,
+            "sifted_key": [
+                0,
+                0,
+                1
+            ],
+            "sifted_keys": {
+                "alice_key": [
+                    0,
+                    0,
+                    1
+                ],
+                "bob_key": [
+                    0,
+                    0,
+                    1
+                ],
+                "key_length": 3
+            },
+            "warnings": []
+        }
+    ],
+    "warning_runs": 0
+}

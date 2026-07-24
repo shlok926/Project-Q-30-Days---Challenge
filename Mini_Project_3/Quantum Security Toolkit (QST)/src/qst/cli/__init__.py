@@ -1,9 +1,9 @@
-"""Explicit exports for QST CLI package.
+"""CLI package initialization exposing the main entrypoint.
 
 References:
-    Docs/07_SYSTEM_ARCHITECTURE.md §5
+    Docs/07_SYSTEM_ARCHITECTURE.md §5, §11
 """
 
-from qst.cli.main import CLIApplication
+from qst.cli.main import main
 
-__all__ = ["CLIApplication"]
+__all__ = ["main"]

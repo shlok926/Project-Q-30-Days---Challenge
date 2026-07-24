@@ -173,7 +173,11 @@ class CSVExporter:
         flattener = CSVFlattener()
         rows = flattener.flatten(data, metadata)
 
-        headers = list(rows[0].keys()) if rows else []
+        headers = []
+        for row in rows:
+            for key in row.keys():
+                if key not in headers:
+                    headers.append(key)
 
         # Write to file
         try:
