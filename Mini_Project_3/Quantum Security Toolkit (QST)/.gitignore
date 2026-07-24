@@ -8,3 +8,6 @@ htmlcov/
 .pytest_cache/
 __pycache__/
 *.pyc
+
+# Local example execution outputs
+examples/outputs/
